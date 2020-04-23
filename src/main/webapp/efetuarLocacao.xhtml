@@ -1,0 +1,93 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="corpo">
+		<h:outputStylesheet name="primeicons/primeicons.css"
+			library="primefaces" />
+		<title>Cadastro de locação</title>
+		<h:form id="formCadastroLocacao">
+			<p:tabView>
+				<p:tab title="Dados da Locação">
+					<h:panelGrid columns="4" cellpadding="10">
+
+						<p:outputLabel for="funcionario" value="Funcionário:" />
+						<p:selectOneMenu id="funcionario"
+							value="#{locacaoBacking.funcionario}" style="width:300px">
+							<f:selectItem itemLabel="Selecione um funcionário" />
+							<f:selectItems value="#{locacaoBacking.listaFuncionarios}"
+								var="funcionario" itemLabel="#{funcionario.nome}"
+								itemValue="#{funcionario.codigo}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="cliente" value="Cliente:" />
+						<p:selectOneMenu id="cliente" value="#{locacaoBacking.cliente}"
+							style="width:300px">
+							<f:selectItem itemLabel="Selecione um cliente" />
+							<f:selectItems value="#{locacaoBacking.listaClientes}"
+								var="cliente" itemLabel="#{cliente.nome}"
+								itemValue="#{cliente.codigo}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="filme" value="Filmes:" />
+						<p:selectCheckboxMenu id="filme"
+							value="#{locacaoBacking.listaIndexFilmesSelecionados}"
+							label="Selecione um ou mais filmes" updateLabel="true"
+							multiple="true" filter="true" filterMatchMode="startsWith"
+							panelStyle="width:250px" style="width:300px">
+							<p:ajax listener="#{locacaoBacking.atualizarValorTotal}"
+								update="valor" />
+							<f:selectItems value="#{locacaoBacking.listaFilmes}" var="filme"
+								itemLabel="#{filme.nome}" itemValue="#{filme.codigo}" />
+
+						</p:selectCheckboxMenu>
+
+					</h:panelGrid>
+					<p:separator />
+					<h:panelGrid columns="4" cellpadding="10">
+
+						<p:outputLabel for="dataLocacao" value="Data da locação:" />
+						<p:outputLabel id="dataLocacao"
+							value="#{locacaoBacking.dataLocacao}" />
+
+						<p:outputLabel for="dataDevolucao" value="Data de devolução:" />
+						<p:calendar id="dataDevolucao"
+							mindate="#{locacaoBacking.dataLocacao}"
+							value="#{locacaoBacking.dataDevolucao}" pattern="dd/MM/yyyy"
+							mask="true" placeholder="Data de devolução" showOn="button" />
+
+						<p:outputLabel value="Valor: " />
+						<p:outputLabel id="valor" value="#{locacaoBacking.valor}" />
+
+						<p:outputLabel for="formaPagamento" value="Forma de pagamento:" />
+						<p:selectOneMenu id="formaPagamento"
+							value="#{locacaoBacking.formaPagamento}">
+							<f:selectItem itemLabel="Selecione uma forma de pagamento" />
+							<f:selectItems value="#{locacaoBacking.listaFormaPagamento}"
+								var="formaPagamento" itemLabel="#{formaPagamento.descricao}"
+								itemValue="#{formaPagamento.codigo}" />
+						</p:selectOneMenu>
+
+					</h:panelGrid>
+				</p:tab>
+			</p:tabView>
+
+			<p:spacer height="50" />
+
+			<p:panelGrid style="border:0px">
+				<p:commandButton value="Salvar" action="#{locacaoBacking.salvar}"
+					update="@form" icon="pi pi-check"/>
+				<p:commandButton value="Cancelar" update="@form"
+					action="#{locacaoBacking.limparCampos}" icon="pi pi-times"/>
+				<p:commandButton value="Sair" action="#{locacaoBacking.sair}" />
+			</p:panelGrid>
+
+			<p:growl id="growl" showDetail="true" sticky="true" />
+
+		</h:form>
+
+
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,66 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="corpo">
+		<title>Cadastro de locação</title>
+		<h:form id="formCadastroDevolucao">
+			<p:tabView>
+				<p:tab title="Dados da Devolução">
+					<h:panelGrid columns="4" cellpadding="10">
+
+						<p:outputLabel for="cliente" value="Cliente:" />
+						<p:selectOneMenu id="cliente" value="#{devolucaoBacking.cliente}"
+							style="width:300px">
+							<p:ajax listener="#{devolucaoBacking.carregarListaLocacoes()}"
+								update="locacao" />
+							<f:selectItem itemLabel="Selecione um cliente" />
+							<f:selectItems value="#{devolucaoBacking.listaClientes}"
+								var="cliente" itemLabel="#{cliente.nome}"
+								itemValue="#{cliente.codigo}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="locacao" value="Locação:" />
+						<p:selectOneMenu id="locacao" value="#{devolucaoBacking.locacao}"
+							style="width:300px">
+							<p:ajax listener="#{devolucaoBacking.carregarFilmesLocacao()}"
+								update="filmes" />
+							<f:selectItem itemLabel="Selecione uma locação" />
+							<f:selectItems value="#{devolucaoBacking.listaLocacoes}"
+								var="locacao" itemLabel="#{locacao.dataLocacao}"
+								itemValue="#{locacao.codigo}" />
+						</p:selectOneMenu>
+
+					</h:panelGrid>
+					<p:separator />
+					<h:panelGrid columns="4" cellpadding="10">
+
+						<p:dataTable id="filmes" var="filme" value="#{devolucaoBacking.listaFilmesLocacao}">
+							<p:column headerText="Filmes">
+								<h:outputText value="#{filme.nome}" />
+							</p:column>
+						</p:dataTable>
+
+					</h:panelGrid>
+				</p:tab>
+			</p:tabView>
+
+			<p:spacer height="50" />
+
+			<p:panelGrid style="border:0px">
+				<p:commandButton value="Devolver" action="#{devolucaoBacking.salvar}"
+					update="@form" />
+				<p:commandButton value="Cancelar" update="@form"
+					action="#{devolucaoBacking.limparCampos}" />
+				<p:commandButton value="Sair" action="#{devolucaoBacking.sair}" />
+			</p:panelGrid>
+
+			<p:growl id="growl" showDetail="true" sticky="true" />
+
+		</h:form>
+
+
+	</ui:define>
+</ui:composition>
