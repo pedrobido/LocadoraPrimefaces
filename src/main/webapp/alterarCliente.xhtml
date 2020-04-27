@@ -5,40 +5,41 @@
 	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
 
 	<ui:define name="corpo">
-	<f:event type="preRenderView" listener="#{clienteBacking.init()}" />
-		<title>Cadastro de cliente</title>
+		<f:event type="preRenderView" listener="#{clienteBacking.init()}" />
+		<title>Alteração de cliente</title>
 		<h:form id="formCadastroCliente">
 			<p:tabView>
 				<p:tab title="Dados do Cliente">
 					<h:panelGrid columns="6" cellpadding="10">
 
 						<p:outputLabel for="nome" value="Nome:" />
-						<p:inputText id="nome" value="#{clienteBacking.nome}" size="30"
-							placeholder="Nome do cliente" />
+						<p:inputText id="nome"
+							value="#{clienteBacking.clienteUpdate.nome}" size="30"
+							placeholder="Nome do cliente" disabled="true" />
 
 						<p:outputLabel for="cpf" value="CPF:" />
 						<p:inputMask mask="999.999.999-99" id="cpf"
-							value="#{clienteBacking.cpf}" size="20" placeholder="CPF" />
+							value="#{clienteBacking.clienteUpdate.cpf}" size="20"
+							placeholder="CPF" disabled="true" />
 
 						<p:outputLabel for="rg" value="RG:" />
 						<p:inputMask mask="99.999.999-*" id="rg"
-							value="#{clienteBacking.rg}" size="20" placeholder="RG" />
+							value="#{clienteBacking.clienteUpdate.rg}" size="20"
+							placeholder="RG" disabled="true" />
 
 						<p:outputLabel for="dataNasc" value="Data de nascimento:" />
-						<p:calendar id="dataNasc" value="#{clienteBacking.dataNascimento}"
-							pattern="dd/MM/yyyy" mask="true" placeholder="Data de nascimento"
-							showOn="button">
-							<p:ajax listener="#{clienteBacking.calculaIdade()}"
-								update="idade" />
-						</p:calendar>
-
+						<p:inputText id="dataNasc"
+							value="#{clienteBacking.clienteUpdate.dataNascimento}"
+							disabled="true" />
 
 						<p:outputLabel for="idade" value="Idade:" />
 						<p:inputNumber decimalPlaces="0" id="idade"
-							value="#{clienteBacking.idade}" size="10" placeholder="Idade" />
+							value="#{clienteBacking.clienteUpdate.idade}" size="10"
+							placeholder="Idade" disabled="true" />
 
 						<p:outputLabel for="sexo" value="Sexo:" />
-						<p:selectOneRadio id="sexo" value="#{clienteBacking.sexo}">
+						<p:selectOneRadio id="sexo"
+							value="#{clienteBacking.clienteUpdate.sexo}" disabled="true">
 							<f:selectItem itemLabel="Masculino" itemValue="M" />
 							<f:selectItem itemLabel="Feminino" itemValue="F" />
 						</p:selectOneRadio>
@@ -48,33 +49,38 @@
 					<h:panelGrid columns="6" cellpadding="10">
 
 						<p:outputLabel for="logradouro" value="Logradouro:" />
-						<p:inputText id="logradouro" value="#{clienteBacking.logradouro}"
+						<p:inputText id="logradouro"
+							value="#{clienteBacking.clienteUpdate.enderecoCodigo.logradouro}"
 							size="30" placeholder="Logradouro" />
 
 						<p:outputLabel for="numero" value="Número:" />
 						<p:inputNumber decimalPlaces="0" id="numero"
-							value="#{clienteBacking.numero}" size="10" placeholder="Número" />
+							value="#{clienteBacking.clienteUpdate.enderecoCodigo.numero}"
+							size="10" placeholder="Número" />
 
 						<p:outputLabel for="complemento" value="Complemento:" />
 						<p:inputText id="complemento"
-							value="#{clienteBacking.complemento}" size="20"
-							placeholder="Complemento" />
+							value="#{clienteBacking.clienteUpdate.enderecoCodigo.complemento}"
+							size="20" placeholder="Complemento" />
 
 						<p:outputLabel for="bairro" value="Bairro:" />
-						<p:inputText id="bairro" value="#{clienteBacking.bairro}"
+						<p:inputText id="bairro"
+							value="#{clienteBacking.clienteUpdate.enderecoCodigo.bairro}"
 							size="15" placeholder="Bairro" />
 
 						<p:outputLabel for="cep" value="CEP:" />
 						<p:inputMask mask="99.999-999" id="cep"
-							value="#{clienteBacking.cep}" size="10" placeholder="CEP" />
+							value="#{clienteBacking.clienteUpdate.enderecoCodigo.cep}"
+							size="10" placeholder="CEP" />
 
 						<p:outputLabel value="" />
 						<p:outputLabel value="" />
 
 						<p:outputLabel for="estado" value="Estado:" />
 						<p:selectOneMenu id="estado" style="width:125px"
-							value="#{clienteBacking.estado}">
-							<p:ajax listener="#{clienteBacking.carregarListaCidades()}"
+							value="#{clienteBacking.clienteUpdate.enderecoCodigo.cidadeCodigo.estadoCodigo.codigo}">
+							<p:ajax
+								listener="#{clienteBacking.carregarListaCidadesAlterar()}"
 								update="cidade" />
 							<f:selectItem itemLabel="Estado" />
 							<f:selectItems value="#{clienteBacking.listaEstados}"
@@ -83,7 +89,8 @@
 						</p:selectOneMenu>
 
 						<p:outputLabel for="cidade" value="Cidade:" />
-						<p:selectOneMenu id="cidade" value="#{clienteBacking.cidade}"
+						<p:selectOneMenu id="cidade"
+							value="#{clienteBacking.clienteUpdate.enderecoCodigo.cidadeCodigo.codigo}"
 							style="width:125px">
 							<f:selectItem itemLabel="Cidade" itemValue="" />
 							<f:selectItems value="#{clienteBacking.listaCidades}"
@@ -99,16 +106,18 @@
 
 						<p:outputLabel for="telefone" value="Telefone:" />
 						<p:inputMask mask="(99)9999-9999" id="telefone"
-							value="#{clienteBacking.telefone}" size="20"
-							placeholder="Telefone" />
+							value="#{clienteBacking.clienteUpdate.contatoCodigo.telefone}"
+							size="20" placeholder="Telefone" />
 
 						<p:outputLabel for="celular" value="Celular:" />
 						<p:inputMask mask="(99)99999-9999" id="celular"
-							value="#{clienteBacking.celular}" size="20" placeholder="Celular" />
+							value="#{clienteBacking.clienteUpdate.contatoCodigo.celular}"
+							size="20" placeholder="Celular" />
 
 						<p:outputLabel for="email" value="E-mail:" />
-						<p:inputText id="email" value="#{clienteBacking.email}" size="20"
-							placeholder="E-mail" />
+						<p:inputText id="email"
+							value="#{clienteBacking.clienteUpdate.contatoCodigo.email}"
+							size="20" placeholder="E-mail" />
 
 					</h:panelGrid>
 				</p:tab>

@@ -9,7 +9,7 @@
 
 		<h:form>
 
-			<p:messages id="messages" />
+			<p:messages id="messages" showDetail="true" closable="true"/>
 
 			<p:tabView>
 
@@ -29,7 +29,8 @@
 							value="#{funcionarioBacking.listaFuncionarios}" var="funcionario"
 							emptyMessage="Nenhum registro encontrado"
 							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
-							paginator="true" rows="5" lazy="true">
+							paginator="true" rows="5" lazy="true" rowKey="#{funcionario.codigo}"
+							selection="#{funcionarioBacking.funcionarioUpdate}" selectionMode="single">
 
 							<f:facet name="{Exporters}">
 
@@ -94,10 +95,28 @@
 								<f:facet name="header">
 									<h:outputText value="Cidade" />
 								</f:facet>
-								<h:outputText value="#{funcionario.enderecoCodigo.cidadeCodigo.nome}" />
+								<h:outputText
+									value="#{funcionario.enderecoCodigo.cidadeCodigo.nome}" />
 							</p:column>
 
 						</p:dataTable>
+
+						<p:contextMenu for="tabelaFuncionarios">
+							<p:menuitem value="Alterar" action="#{funcionarioBacking.alterar}"
+								update="@form" />
+							<p:menuitem value="Excluir" action="#{funcionarioBacking.excluir}"
+								update="@form">
+								<p:confirm header="Excluir funcionário"
+									message="Deseja realmente excluir este funcionário" />
+							</p:menuitem>
+						</p:contextMenu>
+
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+							<p:commandButton value="Sim" type="button"
+								styleClass="ui-confirmdialog-yes" />
+							<p:commandButton value="Não" type="button"
+								styleClass="ui-confirmdialog-no" />
+						</p:confirmDialog>
 
 					</h:panelGrid>
 

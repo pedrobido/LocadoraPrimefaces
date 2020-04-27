@@ -6,18 +6,18 @@
 
 	<ui:define name="corpo">
 	<f:event type="preRenderView" listener="#{filmeBacking.init()}" />
-		<title>Cadastro de filme</title>
+		<title>Alteração de filme</title>
 		<h:form id="formCadastroFilme">
 			<p:tabView>
 				<p:tab title="Dados do Filme">
 					<h:panelGrid columns="4" cellpadding="10">
 
 						<p:outputLabel for="nome" value="Nome:" />
-						<p:inputText id="nome" value="#{filmeBacking.nome}" size="55"
+						<p:inputText id="nome" disabled="true" value="#{filmeBacking.filmeUpdate.nome}" size="55"
 							placeholder="Nome do filme" />
 
 						<p:outputLabel for="genero" value="Gênero:" />
-						<p:selectOneMenu id="genero" value="#{filmeBacking.genero}"
+						<p:selectOneMenu id="genero" disabled="true" value="#{filmeBacking.filmeUpdate.generoCodigo.codigo}"
 							style="width:125px">
 							<f:selectItem itemLabel="Selecione um gênero" itemValue="" />
 							<f:selectItems value="#{filmeBacking.listaGenero}" var="genero"
@@ -26,25 +26,25 @@
 
 						<p:outputLabel for="valor" value="Valor:" />
 						<p:inputNumber symbolPosition="p" symbol="R$ " decimalPlaces="2"
-							id="valor" value="#{filmeBacking.valor}" size="55"
+							id="valor" value="#{filmeBacking.filmeUpdate.valor}" size="55"
 							placeholder="Valor do filme" />
 
 						<p:outputLabel for="disponivel" value="Disponível" />
 						<p:selectOneRadio id="disponivel"
-							value="#{filmeBacking.disponivel}">
+							value="#{filmeBacking.filmeUpdate.disponivel}">
 							<f:selectItem itemLabel="Sim" itemValue="SIM" />
 							<f:selectItem itemLabel="Não" itemValue="NAO" />
 						</p:selectOneRadio>
 
 						<p:outputLabel for="promocao" value="Promoção:" />
-						<p:selectOneRadio id="promocao" value="#{filmeBacking.promocao}">
+						<p:selectOneRadio id="promocao" value="#{filmeBacking.filmeUpdate.promocao}">
 							<f:selectItem itemLabel="Sim" itemValue="SIM" />
 							<f:selectItem itemLabel="Não" itemValue="NAO" />
 						</p:selectOneRadio>
 
 						<p:outputLabel for="valorPromocao" value="Valor da Promoção:" />
 						<p:inputNumber symbolPosition="p" symbol="R$ " decimalPlaces="2"
-							id="valorPromocao" value="#{filmeBacking.valorPromocao}"
+							id="valorPromocao" value="#{filmeBacking.filmeUpdate.valorPromocao}"
 							size="25" placeholder="Valor do filme em promoção" />
 					</h:panelGrid>
 				</p:tab>

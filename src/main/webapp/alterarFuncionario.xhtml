@@ -5,78 +5,83 @@
 	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
 
 	<ui:define name="corpo">
-	<f:event type="preRenderView" listener="#{funcionarioBacking.init()}" />
-		<title>Cadastro de Funcionarios</title>
+		<f:event type="preRenderView" listener="#{funcionarioBacking.init()}" />
+		<title>Alteração de Funcionarios</title>
 		<h:form id="formCadastroFuncionario">
 			<p:tabView>
 				<p:tab title="Dados Pessoais">
 					<h:panelGrid columns="6" cellpadding="10">
 
 						<p:outputLabel for="nome" value="Nome:" />
-						<p:inputText id="nome" value="#{funcionarioBacking.nome}"
-							size="30" placeholder="Nome do funcionario" />
+						<p:inputText id="nome"
+							value="#{funcionarioBacking.funcionarioUpdate.nome}" size="30"
+							placeholder="Nome do funcionario" disabled="true" />
 
 						<p:outputLabel for="cpf" value="CPF:" />
 						<p:inputMask mask="999.999.999-99" id="cpf"
-							value="#{funcionarioBacking.cpf}" size="20" placeholder="CPF" />
+							value="#{funcionarioBacking.funcionarioUpdate.cpf}" size="20"
+							placeholder="CPF" disabled="true" />
 
 						<p:outputLabel for="rg" value="RG:" />
 						<p:inputMask mask="99.999.999-*" id="rg"
-							value="#{funcionarioBacking.rg}" size="20" placeholder="RG" />
+							value="#{funcionarioBacking.funcionarioUpdate.rg}" size="20"
+							placeholder="RG" disabled="true" />
 
 						<p:outputLabel for="dataNasc" value="Data de nascimento:" />
-						<p:calendar id="dataNasc"
-							value="#{funcionarioBacking.dataNascimento}" pattern="dd/MM/yyyy"
-							mask="true" placeholder="Data de nascimento" showOn="button">
-							<p:ajax listener="#{funcionarioBacking.calculaIdade()}"
-								update="idade" />
-						</p:calendar>
+						<p:inputText id="dataNasc"
+							value="#{funcionarioBacking.funcionarioUpdate.dataNascimento}"
+							disabled="true">
+						</p:inputText>
 
 
 						<p:outputLabel for="idade" value="Idade:" />
 						<p:inputNumber decimalPlaces="0" id="idade"
-							value="#{funcionarioBacking.idade}" size="10" placeholder="Idade" />
+							value="#{funcionarioBacking.funcionarioUpdate.idade}" size="10"
+							placeholder="Idade" disabled="true" />
 
 						<p:outputLabel for="sexo" value="Sexo:" />
-						<p:selectOneRadio id="sexo" value="#{funcionarioBacking.sexo}">
+						<p:selectOneRadio id="sexo"
+							value="#{funcionarioBacking.funcionarioUpdate.sexo}"
+							disabled="true">
 							<f:selectItem itemLabel="Masculino" itemValue="M" />
 							<f:selectItem itemLabel="Feminino" itemValue="F" />
 						</p:selectOneRadio>
-
 					</h:panelGrid>
 					<p:separator />
 					<h:panelGrid columns="6" cellpadding="10">
 
 						<p:outputLabel for="logradouro" value="Logradouro:" />
 						<p:inputText id="logradouro"
-							value="#{funcionarioBacking.logradouro}" size="30"
-							placeholder="Logradouro" />
+							value="#{funcionarioBacking.funcionarioUpdate.enderecoCodigo.logradouro}"
+							size="30" placeholder="Logradouro" />
 
 						<p:outputLabel for="numero" value="Número:" />
 						<p:inputNumber decimalPlaces="0" id="numero"
-							value="#{funcionarioBacking.numero}" size="10"
-							placeholder="Número" />
+							value="#{funcionarioBacking.funcionarioUpdate.enderecoCodigo.numero}"
+							size="10" placeholder="Número" />
 
 						<p:outputLabel for="complemento" value="Complemento:" />
 						<p:inputText id="complemento"
-							value="#{funcionarioBacking.complemento}" size="20"
-							placeholder="Complemento" />
+							value="#{funcionarioBacking.funcionarioUpdate.enderecoCodigo.complemento}"
+							size="20" placeholder="Complemento" />
 
 						<p:outputLabel for="bairro" value="Bairro:" />
-						<p:inputText id="bairro" value="#{funcionarioBacking.bairro}"
+						<p:inputText id="bairro"
+							value="#{funcionarioBacking.funcionarioUpdate.enderecoCodigo.bairro}"
 							size="15" placeholder="Bairro" />
 
 						<p:outputLabel for="cep" value="CEP:" />
 						<p:inputMask mask="99.999-999" id="cep"
-							value="#{funcionarioBacking.cep}" size="10" placeholder="CEP" />
+							value="#{funcionarioBacking.funcionarioUpdate.enderecoCodigo.cep}"
+							size="10" placeholder="CEP" />
 
 						<p:outputLabel value="" />
 						<p:outputLabel value="" />
 
 						<p:outputLabel for="estado" value="Estado:" />
 						<p:selectOneMenu id="estado" style="width:125px"
-							value="#{funcionarioBacking.estado}">
-							<p:ajax listener="#{funcionarioBacking.carregarListaCidades()}"
+							value="#{funcionarioBacking.funcionarioUpdate.enderecoCodigo.cidadeCodigo.estadoCodigo.codigo}">
+							<p:ajax listener="#{funcionarioBacking.carregarListaCidadesAlterar()}"
 								update="cidade" />
 							<f:selectItem itemLabel="Estado" />
 							<f:selectItems value="#{funcionarioBacking.listaEstados}"
@@ -85,7 +90,8 @@
 						</p:selectOneMenu>
 
 						<p:outputLabel for="cidade" value="Cidade:" />
-						<p:selectOneMenu id="cidade" value="#{funcionarioBacking.cidade}"
+						<p:selectOneMenu id="cidade"
+							value="#{funcionarioBacking.funcionarioUpdate.enderecoCodigo.cidadeCodigo.codigo}"
 							style="width:125px">
 							<f:selectItem itemLabel="Cidade" itemValue="" />
 							<f:selectItems value="#{funcionarioBacking.listaCidades}"
@@ -98,26 +104,30 @@
 
 						<p:outputLabel for="telefone" value="Telefone:" />
 						<p:inputMask mask="(99)9999-9999" id="telefone"
-							value="#{funcionarioBacking.telefone}" size="20"
-							placeholder="Telefone" />
+							value="#{funcionarioBacking.funcionarioUpdate.contatoCodigo.telefone}"
+							size="20" placeholder="Telefone" />
 
 						<p:outputLabel for="celular" value="Celular:" />
 						<p:inputMask mask="(99)99999-9999" id="celular"
-							value="#{funcionarioBacking.celular}" size="20" placeholder="Celular" />
+							value="#{funcionarioBacking.funcionarioUpdate.contatoCodigo.celular}"
+							size="20" placeholder="Celular" />
 
 						<p:outputLabel for="email" value="E-mail:" />
-						<p:inputText id="email" value="#{funcionarioBacking.email}" size="20"
-							placeholder="E-mail" />
+						<p:inputText id="email"
+							value="#{funcionarioBacking.funcionarioUpdate.contatoCodigo.email}"
+							size="20" placeholder="E-mail" />
 
 					</h:panelGrid>
 				</p:tab>
 				<p:tab title="Dados de acesso">
 					<h:panelGrid columns="4" cellpadding="10">
 						<p:outputLabel value="Login:" />
-						<p:inputText value="#{funcionarioBacking.login}" size="20" />
+						<p:inputText value="#{funcionarioBacking.funcionarioUpdate.login}"
+							size="20"  />
 						<h:outputText value="Senha: " />
-						<p:password id="senha" value="#{funcionarioBacking.senha}"
-							feedback="true" />
+						<p:password id="senha"
+							value="#{funcionarioBacking.funcionarioUpdate.senha}"
+							feedback="true" disabled="true" />
 					</h:panelGrid>
 				</p:tab>
 			</p:tabView>

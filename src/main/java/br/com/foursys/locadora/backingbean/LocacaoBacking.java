@@ -9,7 +9,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
@@ -149,7 +148,6 @@ public class LocacaoBacking implements Serializable {
 
 	// FIM DOS GETTERS E SETTERS
 
-	@PostConstruct
 	public void init() {
 		listaFilmes = carregarListaFilmes();
 		listaClientes = carregarListaClientes();
@@ -213,11 +211,11 @@ public class LocacaoBacking implements Serializable {
 	public void limparCampos() {
 		cliente = null;
 		funcionario = null;
-		dataLocacao = null;
+		dataDevolucao = null;
 		valor = null;
 		formaPagamento = null;
-		dataDevolucao = null;
 		listaIndexFilmesSelecionados = new ArrayList<String>();
+		init();
 	}
 
 	public String sair() {

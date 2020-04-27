@@ -19,6 +19,15 @@ public class LoginBacking implements Serializable {
 
 	private String login;
 	private String senha;
+	private String usuario;
+
+	public String getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(String usuario) {
+		this.usuario = usuario;
+	}
 
 	public String getLogin() {
 		return login;
@@ -38,7 +47,8 @@ public class LoginBacking implements Serializable {
 
 	public void efetuarLogin() {
 		try {
-			if (new LoginController().verificarUsuario(login, senha)) {
+			usuario = new LoginController().verificarUsuario(login, senha);
+			if (!usuario.equals("")) {
 				FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
 			} else {
 				JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.problemasNoLogin, Mensagem.credenciaisInvalidas);

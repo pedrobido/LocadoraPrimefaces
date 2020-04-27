@@ -5,13 +5,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
+import br.com.foursys.locadora.bean.Cliente;
 import br.com.foursys.locadora.bean.Filme;
 import br.com.foursys.locadora.bean.Genero;
+import br.com.foursys.locadora.controller.ClienteController;
 import br.com.foursys.locadora.controller.FilmeController;
 import br.com.foursys.locadora.controller.GeneroController;
 import br.com.foursys.locadora.util.JSFUtil;
@@ -29,7 +30,8 @@ public class FilmeBacking implements Serializable {
 	private String pesquisaNome = "";
 	private String genero;
 	private List<Genero> listaGenero = new ArrayList<Genero>();
-	private boolean alterar;
+	private boolean alterar = false;
+	private Filme filmeUpdate;
 //	private NumberFormat formatoMoeda = NumberFormat.getCurrencyInstance();
 
 	// Getters e Setters
@@ -108,7 +110,14 @@ public class FilmeBacking implements Serializable {
 
 	// Fim dos Getters e Setters
 
-	@PostConstruct
+	public Filme getFilmeUpdate() {
+		return filmeUpdate;
+	}
+
+	public void setFilmeUpdate(Filme filmeUpdate) {
+		this.filmeUpdate = filmeUpdate;
+	}
+
 	public void init() {
 		listaGenero = carregarListaGenero();
 	}
@@ -131,8 +140,8 @@ public class FilmeBacking implements Serializable {
 	}
 
 	public String salvar() {
-		if (validarCampos()) {
-			if (!alterar) {
+		if (!alterar) {
+			if (validarIncluir()) {
 				Filme filme = new Filme();
 				filme.setNome(nome);
 				filme.setGeneroCodigo(new Genero(Integer.parseInt(genero)));
@@ -147,8 +156,18 @@ public class FilmeBacking implements Serializable {
 				} catch (Exception e) {
 					JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.erro, Mensagem.erroSalvarFilme);
 				}
-			} else {
-				System.out.println("Alterar ainda não foi implementado.");
+			}
+		} else {
+			if (validarAlterar()) {
+				alterar = false;
+				try {
+					new FilmeController().salvar(filmeUpdate);
+					JSFUtil.addInfoMessage(Rotulo.INFO.getDescricao(), Mensagem.sucesso, Mensagem.filmeAlterado);
+					filmeUpdate = null;
+				} catch (Exception e) {
+					JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.erro, Mensagem.erroAlterarFilme);
+				}
+				return "consultarFilme";
 			}
 		}
 		return "";
@@ -173,7 +192,7 @@ public class FilmeBacking implements Serializable {
 		return "";
 	}
 
-	public boolean validarCampos() {
+	public boolean validarIncluir() {
 		if (Valida.verificaVazio(nome)) {
 			JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.campoObrigatorio, Mensagem.informeNome);
 			return false;
@@ -199,6 +218,48 @@ public class FilmeBacking implements Serializable {
 			valorPromocao = "0.0";
 		}
 		return true;
+	}
+
+	public boolean validarAlterar() {
+		if (Valida.verificaVazio(filmeUpdate.getValor() + "")) {
+			JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.campoObrigatorio, Mensagem.informeValor);
+			return false;
+		} else if (Valida.verificaVazio(filmeUpdate.getDisponivel())) {
+			JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.campoObrigatorio, Mensagem.informeDisponivel);
+			return false;
+		} else if (Valida.verificaVazio(filmeUpdate.getPromocao())) {
+			JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.campoObrigatorio, Mensagem.informePromocao);
+			return false;
+		} else if (filmeUpdate.getPromocao().equals("SIM")) {
+			if (Valida.verificaVazio(filmeUpdate.getValorPromocao() + "")) {
+				JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.campoObrigatorio,
+						Mensagem.informeValorPromocao);
+				return false;
+			}
+		} else {
+			valorPromocao = "0.0";
+		}
+		return true;
+	}
+
+	public String alterar() {
+		alterar = true;
+		return "alterarFilme";
+	}
+
+	public String excluir() {
+		listaFilmes.remove(filmeUpdate);
+		new FilmeController().excluir(filmeUpdate);
+		listaFilmes = new FilmeController().buscarTodos();
+		for (Filme filme : listaFilmes) {
+			if (filme.getCodigo().equals(filmeUpdate.getCodigo())) {
+				JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.erro, Mensagem.erroExcluirFilme);
+				return "";
+			}
+		}
+		JSFUtil.addInfoMessage(Rotulo.INFO.getDescricao(), Mensagem.sucesso, Mensagem.filmeExcluidoSucesso);
+		filmeUpdate = null;
+		return "";
 	}
 
 }

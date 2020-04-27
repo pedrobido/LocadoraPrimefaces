@@ -5,7 +5,10 @@
 	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
 
 	<ui:define name="corpo">
-		<title>Cadastro de locação</title>
+		<f:metadata>
+			<f:viewAction action="#{devolucaoBacking.init()}" />
+		</f:metadata>
+		<title>Devolução</title>
 		<h:form id="formCadastroDevolucao">
 			<p:tabView>
 				<p:tab title="Dados da Devolução">
@@ -37,7 +40,8 @@
 					<p:separator />
 					<h:panelGrid columns="4" cellpadding="10">
 
-						<p:dataTable id="filmes" var="filme" value="#{devolucaoBacking.listaFilmesLocacao}">
+						<p:dataTable id="filmes" var="filme"
+							value="#{devolucaoBacking.listaFilmesLocacao}">
 							<p:column headerText="Filmes">
 								<h:outputText value="#{filme.nome}" />
 							</p:column>
@@ -50,8 +54,8 @@
 			<p:spacer height="50" />
 
 			<p:panelGrid style="border:0px">
-				<p:commandButton value="Devolver" action="#{devolucaoBacking.salvar}"
-					update="@form" />
+				<p:commandButton value="Devolver"
+					action="#{devolucaoBacking.salvar}" update="@form" />
 				<p:commandButton value="Cancelar" update="@form"
 					action="#{devolucaoBacking.limparCampos}" />
 				<p:commandButton value="Sair" action="#{devolucaoBacking.sair}" />

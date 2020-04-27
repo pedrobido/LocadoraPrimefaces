@@ -9,7 +9,7 @@
 
 		<h:form>
 
-			<p:messages id="messages" />
+			<p:messages id="messages" showDetail="true" closable="true" />
 
 			<p:tabView>
 
@@ -29,7 +29,8 @@
 							value="#{clienteBacking.listaClientes}" var="cliente"
 							emptyMessage="Nenhum registro encontrado"
 							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
-							paginator="true" rows="5" lazy="true">
+							paginator="true" rows="5" lazy="true" rowKey="#{cliente.codigo}"
+							selection="#{clienteBacking.clienteUpdate}" selectionMode="single">
 
 							<f:facet name="{Exporters}">
 
@@ -98,6 +99,24 @@
 							</p:column>
 
 						</p:dataTable>
+						
+						
+						<p:contextMenu for="tabelaClientes">
+							<p:menuitem value="Alterar" action="#{clienteBacking.alterar}"
+								update="@form" />
+							<p:menuitem value="Excluir" action="#{clienteBacking.excluir}"
+								update="@form">
+								<p:confirm header="Excluir cliente"
+									message="Deseja realmente excluir este cliente" />
+							</p:menuitem>
+						</p:contextMenu>
+
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+							<p:commandButton value="Sim" type="button"
+								styleClass="ui-confirmdialog-yes" />
+							<p:commandButton value="Não" type="button"
+								styleClass="ui-confirmdialog-no" />
+						</p:confirmDialog>
 
 					</h:panelGrid>
 

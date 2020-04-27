@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -61,6 +60,15 @@ public class FuncionarioBacking implements Serializable {
 	private ArrayList<Cidade> listaCidades;
 	private ArrayList<Estado> listaEstados;
 	private boolean alterar;
+	private Funcionario funcionarioUpdate;
+
+	public Funcionario getFuncionarioUpdate() {
+		return funcionarioUpdate;
+	}
+
+	public void setFuncionarioUpdate(Funcionario funcionarioUpdate) {
+		this.funcionarioUpdate = funcionarioUpdate;
+	}
 
 	public String getLogin() {
 		return login;
@@ -266,7 +274,6 @@ public class FuncionarioBacking implements Serializable {
 		return new FuncionarioController().buscarNome(pesquisaNome);
 	}
 
-	@PostConstruct
 	public void init() {
 		listaEstados = carregarListaEstados();
 	}
@@ -287,13 +294,18 @@ public class FuncionarioBacking implements Serializable {
 		listaCidades = new CidadeController().carregarListaCidades(estado);
 	}
 
+	public void carregarListaCidadesAlterar() {
+		listaCidades = new CidadeController().carregarListaCidades(
+				funcionarioUpdate.getEnderecoCodigo().getCidadeCodigo().getEstadoCodigo().getCodigo().toString());
+	}
+
 	public ArrayList<Estado> carregarListaEstados() {
 		return new EstadoController().buscarTodos();
 	}
 
 	public String salvar() {
-		if (validarCampos()) {
-			if (!alterar) {
+		if (!alterar) {
+			if (validarIncluir()) {
 				Funcionario funcionario = new Funcionario();
 				Contato contato = new Contato();
 				Endereco endereco = new Endereco();
@@ -325,11 +337,59 @@ public class FuncionarioBacking implements Serializable {
 				} catch (Exception e) {
 					JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.erro, Mensagem.erroSalvarFuncionario);
 				}
-			} else {
-				System.out.println("Alterar ainda não foi implementado.");
+			}
+		} else {
+			if (validarAlterar()) {
+				alterar = false;
+				try {
+					new EnderecoController().salvar(funcionarioUpdate.getEnderecoCodigo());
+					new ContatoController().salvar(funcionarioUpdate.getContatoCodigo());
+					new FuncionarioController().salvar(funcionarioUpdate);
+					JSFUtil.addInfoMessage(Rotulo.INFO.getDescricao(), Mensagem.sucesso, Mensagem.funcionarioAlterado);
+					funcionarioUpdate = null;
+				} catch (Exception e) {
+					JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.erro, Mensagem.erroAlterarFuncionario);
+				}
+				return "consultarFuncionario";
 			}
 		}
 		return "";
+	}
+
+	public boolean validarAlterar() {
+		if (Valida.verificaVazio(funcionarioUpdate.getEnderecoCodigo().getLogradouro())) {
+			JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.campoObrigatorio, Mensagem.informeLogradouro);
+			return false;
+		} else if (Valida.verificaVazio(funcionarioUpdate.getEnderecoCodigo().getNumero() + "")) {
+			JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.campoObrigatorio, Mensagem.informeNumero);
+			return false;
+		} else if (Valida.verificaVazio(funcionarioUpdate.getEnderecoCodigo().getBairro())) {
+			JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.campoObrigatorio, Mensagem.informeBairro);
+			return false;
+		} else if (Valida.verificaVazio(funcionarioUpdate.getEnderecoCodigo().getCep())) {
+			JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.campoObrigatorio, Mensagem.informeCep);
+			return false;
+		} else if (Valida.verificaVazio(funcionarioUpdate.getEnderecoCodigo().getCidadeCodigo().getNome())) {
+			JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.campoObrigatorio, Mensagem.informeCidade);
+			return false;
+		} else if (Valida
+				.verificaVazio(funcionarioUpdate.getEnderecoCodigo().getCidadeCodigo().getEstadoCodigo().getNome())) {
+			JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.campoObrigatorio, Mensagem.informeEstado);
+			return false;
+		} else if (Valida.verificaVazio(funcionarioUpdate.getLogin())) {
+			JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.campoObrigatorio, Mensagem.informeLogin);
+			return false;
+		} else if (Valida.verificaVazio(funcionarioUpdate.getSenha())) {
+			JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.campoObrigatorio, Mensagem.informeSenha);
+			return false;
+		}
+		return true;
+	}
+
+	public String alterar() {
+		alterar = true;
+		carregarListaCidadesAlterar();
+		return "alterarFuncionario";
 	}
 
 	public void limparCampos() {
@@ -383,7 +443,7 @@ public class FuncionarioBacking implements Serializable {
 		return dataFormatada;
 	}
 
-	public boolean validarCampos() {
+	public boolean validarIncluir() {
 		if (Valida.verificaVazio(nome)) {
 			JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.campoObrigatorio, Mensagem.informeNome);
 			return false;
@@ -444,6 +504,21 @@ public class FuncionarioBacking implements Serializable {
 			}
 		}
 		return true;
+	}
+
+	public String excluir() {
+		new FuncionarioController().excluir(funcionarioUpdate);
+		new EnderecoController().excluir(funcionarioUpdate.getEnderecoCodigo());
+		new ContatoController().excluir(funcionarioUpdate.getContatoCodigo());
+		listaFuncionarios = new FuncionarioController().buscarTodos();
+		for (Funcionario funcionarios : listaFuncionarios) {
+			if (funcionarios.getCodigo().equals(funcionarioUpdate.getCodigo())) {
+				JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.erro, Mensagem.erroExcluirFuncionario);
+				return "";
+			} 
+		}
+		JSFUtil.addInfoMessage(Rotulo.INFO.getDescricao(), Mensagem.sucesso, Mensagem.funcionarioExcluidoSucesso);
+		return "";
 	}
 
 }

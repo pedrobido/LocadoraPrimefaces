@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
@@ -57,6 +56,15 @@ public class ClienteBacking implements Serializable {
 	private ArrayList<Cidade> listaCidades;
 	private ArrayList<Estado> listaEstados;
 	private boolean alterar;
+	private Cliente clienteUpdate;
+
+	public Cliente getClienteUpdate() {
+		return clienteUpdate;
+	}
+
+	public void setClienteUpdate(Cliente clienteUpdate) {
+		this.clienteUpdate = clienteUpdate;
+	}
 
 	public String getCelular() {
 		return celular;
@@ -246,7 +254,6 @@ public class ClienteBacking implements Serializable {
 		return new ClienteController().buscarNome(pesquisaNome);
 	}
 
-	@PostConstruct
 	public void init() {
 		listaEstados = carregarListaEstados();
 	}
@@ -271,9 +278,14 @@ public class ClienteBacking implements Serializable {
 		return new EstadoController().buscarTodos();
 	}
 
+	public void carregarListaCidadesAlterar() {
+		listaCidades = new CidadeController().carregarListaCidades(
+				clienteUpdate.getEnderecoCodigo().getCidadeCodigo().getEstadoCodigo().getCodigo().toString());
+	}
+
 	public String salvar() {
-		if (validarCampos()) {
-			if (!alterar) {
+		if (!alterar) {
+			if (validarCampos()) {
 				Cliente cliente = new Cliente();
 				Contato contato = new Contato();
 				Endereco endereco = new Endereco();
@@ -303,11 +315,47 @@ public class ClienteBacking implements Serializable {
 				} catch (Exception e) {
 					JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.erro, Mensagem.erroSalvarCliente);
 				}
-			} else {
-				System.out.println("Alterar ainda não foi implementado.");
+			}
+		} else {
+			if (validarAlterar()) {
+				alterar = false;
+				try {
+					new EnderecoController().salvar(clienteUpdate.getEnderecoCodigo());
+					new ContatoController().salvar(clienteUpdate.getContatoCodigo());
+					new ClienteController().salvar(clienteUpdate);
+					JSFUtil.addInfoMessage(Rotulo.INFO.getDescricao(), Mensagem.sucesso, Mensagem.clienteAlterado);
+					clienteUpdate = null;
+				} catch (Exception e) {
+					JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.erro, Mensagem.erroAlterarFuncionario);
+				}
+				return "consultarCliente";
 			}
 		}
 		return "";
+	}
+
+	public boolean validarAlterar() {
+		if (Valida.verificaVazio(clienteUpdate.getEnderecoCodigo().getLogradouro())) {
+			JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.campoObrigatorio, Mensagem.informeLogradouro);
+			return false;
+		} else if (Valida.verificaVazio(clienteUpdate.getEnderecoCodigo().getNumero() + "")) {
+			JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.campoObrigatorio, Mensagem.informeNumero);
+			return false;
+		} else if (Valida.verificaVazio(clienteUpdate.getEnderecoCodigo().getBairro())) {
+			JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.campoObrigatorio, Mensagem.informeBairro);
+			return false;
+		} else if (Valida.verificaVazio(clienteUpdate.getEnderecoCodigo().getCep())) {
+			JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.campoObrigatorio, Mensagem.informeCep);
+			return false;
+		} else if (Valida.verificaVazio(clienteUpdate.getEnderecoCodigo().getCidadeCodigo().getNome())) {
+			JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.campoObrigatorio, Mensagem.informeCidade);
+			return false;
+		} else if (Valida
+				.verificaVazio(clienteUpdate.getEnderecoCodigo().getCidadeCodigo().getEstadoCodigo().getNome())) {
+			JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.campoObrigatorio, Mensagem.informeEstado);
+			return false;
+		}
+		return true;
 	}
 
 	public void limparCampos() {
@@ -408,6 +456,27 @@ public class ClienteBacking implements Serializable {
 			}
 		}
 		return true;
+	}
+
+	public String excluir() {
+		new ClienteController().excluir(clienteUpdate);
+		new EnderecoController().excluir(clienteUpdate.getEnderecoCodigo());
+		new ContatoController().excluir(clienteUpdate.getContatoCodigo());
+		listaClientes = new ClienteController().buscarTodos();
+		for (Cliente clientes : listaClientes) {
+			if (clientes.getCodigo().equals(clienteUpdate.getCodigo())) {
+				JSFUtil.addInfoMessage(Rotulo.ERROR.getDescricao(), Mensagem.erro, Mensagem.erroExcluirCliente);
+				return "";
+			}
+		}
+		JSFUtil.addInfoMessage(Rotulo.INFO.getDescricao(), Mensagem.sucesso, Mensagem.clienteExcluidoSucesso);
+		return "";
+	}
+
+	public String alterar() {
+		alterar = true;
+		carregarListaCidadesAlterar();
+		return "alterarCliente";
 	}
 
 }

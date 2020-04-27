@@ -25,11 +25,11 @@
 
 					<h:panelGrid columns="1">
 
-						<p:dataTable id="tabelaFilmes"
-							value="#{filmeBacking.listaFilmes}" var="filme"
-							emptyMessage="Nenhum registro encontrado"
+						<p:dataTable id="tabelaFilmes" value="#{filmeBacking.listaFilmes}"
+							var="filme" emptyMessage="Nenhum registro encontrado"
 							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
-							paginator="true" rows="5" lazy="true">
+							paginator="true" rows="5" lazy="true" rowKey="#{filme.codigo}"
+							selection="#{filmeBacking.filmeUpdate}" selectionMode="single">
 
 							<f:facet name="{Exporters}">
 
@@ -98,6 +98,23 @@
 							</p:column>
 
 						</p:dataTable>
+
+						<p:contextMenu for="tabelaFilmes">
+							<p:menuitem value="Alterar" action="#{filmeBacking.alterar}"
+								update="tabelaFilmes" />
+							<p:menuitem value="Excluir" action="#{filmeBacking.excluir}"
+								update="tabelaFilmes">
+								<p:confirm header="Excluir filme"
+									message="Deseja realmente excluir este filme?" />
+							</p:menuitem>
+						</p:contextMenu>
+
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+							<p:commandButton value="Sim" type="button"
+								styleClass="ui-confirmdialog-yes" />
+							<p:commandButton value="Não" type="button"
+								styleClass="ui-confirmdialog-no" />
+						</p:confirmDialog>
 
 					</h:panelGrid>
 

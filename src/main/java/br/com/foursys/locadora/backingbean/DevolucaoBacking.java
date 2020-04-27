@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
@@ -91,8 +90,7 @@ public class DevolucaoBacking implements Serializable {
 
 	public void carregarFilmesLocacao() {
 		listaFilmesLocacao = new ArrayList<Filme>();
-		listaLocacaoFilme = new LocacaoFilmeController().buscarTodos();
-		for (LocacaoFilme locacaoFilme : listaLocacaoFilme) {
+		for (LocacaoFilme locacaoFilme : new LocacaoFilmeController().buscarTodos()) {
 			if (locacao.equals(locacaoFilme.getLocacaoCodigo().getCodigo() + "")) {
 				listaFilmesLocacao.add(locacaoFilme.getFilmeCodigo());
 			}
@@ -135,8 +133,8 @@ public class DevolucaoBacking implements Serializable {
 		return true;
 	}
 
-	@PostConstruct
 	public void init() {
+		limparCampos();
 		listaClientes = carregarListaClientes();
 	}
 

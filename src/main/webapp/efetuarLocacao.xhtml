@@ -5,8 +5,9 @@
 	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
 
 	<ui:define name="corpo">
-		<h:outputStylesheet name="primeicons/primeicons.css"
-			library="primefaces" />
+		<f:metadata>
+			<f:viewAction action="#{locacaoBacking.init()}" />
+		</f:metadata>
 		<title>Cadastro de locação</title>
 		<h:form id="formCadastroLocacao">
 			<p:tabView>
@@ -78,9 +79,9 @@
 
 			<p:panelGrid style="border:0px">
 				<p:commandButton value="Salvar" action="#{locacaoBacking.salvar}"
-					update="@form" icon="pi pi-check"/>
+					update="@form" icon="pi pi-check" />
 				<p:commandButton value="Cancelar" update="@form"
-					action="#{locacaoBacking.limparCampos}" icon="pi pi-times"/>
+					action="#{locacaoBacking.limparCampos}" icon="pi pi-times" />
 				<p:commandButton value="Sair" action="#{locacaoBacking.sair}" />
 			</p:panelGrid>
 

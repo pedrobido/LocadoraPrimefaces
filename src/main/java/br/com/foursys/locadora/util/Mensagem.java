@@ -6,8 +6,11 @@ public class Mensagem {
 	public static String credenciaisInvalidas = "Credenciais inválidas!";
 	public static String sucesso = "Sucesso!";
 	public static String filmeSalvo = "Filme salvo com sucesso!";
+	public static String filmeAlterado = "Filme alterado com sucesso!";
 	public static String clienteSalvo = "Cliente salvo com sucesso!";
 	public static String funcionarioSalvo = "Funcionário salvo com sucesso!";
+	public static String funcionarioAlterado = "Funcionário alterado com sucesso!";
+	public static String clienteAlterado = "Cliente alterado com sucesso!";
 	public static String locacaoSalva = "Locação salva com sucesso!";
 	public static String devolucaoSalva = "Devolução salva com sucesso!";
 	public static String campoObrigatorio = "Campo obrigatório!";
@@ -46,7 +49,14 @@ public class Mensagem {
 	public static String erroSalvarFuncionario = "Erro ao salvar o funcionário!";
 	public static String erroSalvarLocacao = "Erro ao salvar a locação!";
 	public static String erroSalvarDevolucao = "Erro ao salvar a devolução!";
+	public static String erroAlterarFilme = "Erro ao alterar o filme!";
+	public static String erroAlterarFuncionario = "Erro ao alterar o funcionário!";
+	public static String erroExcluirFuncionario = "Não foi possível excluir o funcionário, pois existem locações atribuídas a este funcionário!";
+	public static String erroExcluirFilme = "Não foi possível excluir o filme, pois existem locações atribuídas a este filme!";
+	public static String erroExcluirCliente = "Não foi possível excluir o cleinte, pois existem locações atribuídas a este cliente!";
+	public static String filmeExcluidoSucesso = "Filme excluido com sucesso.";
+	public static String funcionarioExcluidoSucesso = "Funcionário excluido com sucesso.";
+	public static String clienteExcluidoSucesso = "Cliente excluido com sucesso.";
 	public static String erro = "Erro!";
-	
-	
+
 }
